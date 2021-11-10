@@ -15,6 +15,7 @@ class KnapsackProblem:
     
     items: List[Item]
     solution: List[bool]
+    w_capacity: int
     
     def __init__(self, values: List[int], weights: List[int], 
                  w_capacity: int) -> None:
@@ -53,6 +54,13 @@ class KnapsackProblem:
         else:
             raise BadSolutionException
         
+    def get_total_value(self):
+        total_value = 0
+        for index, selected in enumerate(self.solution):
+            if selected:
+                total_value += self.items[index].value
+        return total_value
+    
     def is_valid_solution(self, solution: List[bool]) -> bool:
         """
         Comprueba si la solucion es válida o no
@@ -72,7 +80,7 @@ class KnapsackProblem:
         if len(solution) > len(self.items):
             return False
         
-        for index, selected in enumerate(self.solution):
+        for index, selected in enumerate(solution):
             if selected:
                 total_weights += self.items[index].weight
                 if total_weights > self.w_capacity:
