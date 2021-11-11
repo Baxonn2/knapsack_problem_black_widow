@@ -8,6 +8,10 @@ class Item:
         
 class BadSolutionException(Exception):
     
+    def __init__(self, total_weight, *args: object) -> None:
+        super().__init__(*args)
+        self.total_weight = total_weight
+    
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         return super().__call__(*args, **kwds)
 
@@ -52,7 +56,11 @@ class KnapsackProblem:
         if self.is_valid_solution(solution):
             self.solution = solution
         else:
-            raise BadSolutionException
+            total_weight = 0
+            for index, selected in enumerate(solution):
+                if selected:
+                    total_weight += self.items[index].weight
+            raise BadSolutionException(total_weight)
         
     def get_total_value(self):
         total_value = 0

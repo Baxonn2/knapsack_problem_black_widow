@@ -8,7 +8,7 @@ def q1(x: float, x_max = 6) -> float:
     return 1
 
 def q2(x: float, x_max = 6) -> float:
-    if x < 0.5 * x_max:
+    if abs(x) < 0.5 * x_max:
         return (x / (0.5 * x_max))**2
     return 1
 
