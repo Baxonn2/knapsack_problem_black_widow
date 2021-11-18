@@ -9,7 +9,7 @@ weights = []
 capacity = 0
 first_line = True
 #with open("f1_l-d_kp_10_269", "r") as file:
-with open("knapPI_3_100_1000_1", "r") as file:
+with open("knapPI_1_100_1000_1", "r") as file:
     lines = file.read().split("\n")
     for index, line in enumerate(lines):
         line_list = line.strip().split(" ")
