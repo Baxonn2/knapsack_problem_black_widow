@@ -144,6 +144,8 @@ def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0
         pop3 = []
         gbest = pop[0]
         
+        hist.append(str(func(gbest) * -1))
+        
         # print something useful
         if disp: 
             print(f'> ITER: {epoch+1:>{spacer}} | POP: {len(pop)} | GBEST: {func(gbest)}') #  {[func(x) for x in pop[0::100]]}')
@@ -203,4 +205,4 @@ def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0
         pop = deepcopy(pop2)
 
     # return global best position and func value at global best position
-    return func(gbest), gbest
+    return func(gbest), gbest, hist

@@ -74,26 +74,26 @@ def funcion(x):
 
 def print_status(file_path, q_function, iteracion):
     strtime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-    print(f"{strtime} - evaluando: {file_path} con funcion: {q_function}, iteracion {iteracion}/31")
+    print(f"{strtime} - evaluando: {file_path} con funcion: {q_function}, iteracion {iteracion}/31", end=" ")
 
 if __name__ == "__main__":
     
-    for file_path in files_path:
+    for file_path, file_name in zip(files_path, files_name):
         for q_function in [q1, q2, q3, q4]:
             for iteration in range(31):
-                print_status(file_path, q_function.__name__, iteration)
+                print_status(file_name, q_function.__name__, iteration)
                 problem = generate_problem(file_path)
                 
-                inverted_total_value, solution = minimize(
+                inverted_total_value, solution, history = minimize(
                     funcion, 
                     q_function,
                     dof=len(problem.items), 
                     #x0=[0.5] * len(values),
                     bounds=[(-3, 3)] * len(problem.items),
-                    #pp=0.95,
-                    #cr=0.05,
-                    #pm=0.8,
-                    npop=200, 
+                    pp=0.95,
+                    cr=0.05,
+                    pm=0.8,
+                    npop=20, 
                     maxiter=100,
                     disp=False
                 )
@@ -101,6 +101,9 @@ if __name__ == "__main__":
                 total_value = - inverted_total_value
                 binary_solution = solution
                 print(f"{total_value=}")
-                print(f"{solution=}")
-                print(f"{binary_solution=}")
-                problem.print_result()
+                #print(f"{solution=}")
+                #print(f"{binary_solution=}")
+                #problem.print_result()
+                
+                with open(f"resultados/{file_name} - {q_function.__name__}.csv", "a") as file:
+                    file.write(f"{iteration}," + ",".join(history) + "\n")

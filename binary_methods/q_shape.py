@@ -18,6 +18,7 @@ def q3(x: float, x_max = 6) -> float:
     return 1
 
 def q4(x: float, x_max = 6) -> float:
+    x = abs(x)
     if x < 0.5 * x_max:
         return sqrt(x / (0.5 * x_max))
     return 1
