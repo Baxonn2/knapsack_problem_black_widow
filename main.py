@@ -1,56 +1,106 @@
 from typing import List
 from bwo import minimize
 from knapsack import KnapsackProblem, BadSolutionException
-#from binary_methods.simple_binary import binarize
-from binary_methods.q_shape import binarize, q1, q2, q3, q4
+from binary_methods.q_shape import q1, q2, q3, q4
+from datetime import datetime
 
-values = []
-weights = []
-capacity = 0
-first_line = True
-#with open("f1_l-d_kp_10_269", "r") as file:
-with open("knapPI_1_100_1000_1", "r") as file:
-    lines = file.read().split("\n")
-    for index, line in enumerate(lines):
-        line_list = line.strip().split(" ")
-        if first_line:
-            capacity = int(line_list[1])
-            first_line = False
-        elif index == len(lines):
-            print(line_list)
-            break
-        else:
-            v, w = line_list
-            values.append(int(v))
-            weights.append(int(w))
-        
-problem = KnapsackProblem(values, weights, capacity)
-problem.print_result()
+files_path = [
+    "instances/knapPI_1_100_1000_1",
+    "instances/knapPI_2_100_1000_1",
+    "instances/knapPI_3_100_1000_1",
+    "instances/knapPI_1_200_1000_1",
+    "instances/knapPI_2_200_1000_1",
+    "instances/knapPI_3_200_1000_1",
+    "instances/knapPI_1_500_1000_1",
+    "instances/knapPI_2_500_1000_1",
+    "instances/knapPI_3_500_1000_1",
+    "instances/knapPI_1_1000_1000_1",
+    "instances/knapPI_2_1000_1000_1",
+    "instances/knapPI_3_1000_1000_1",
+    "instances/knapPI_1_2000_1000_1",
+    "instances/knapPI_2_2000_1000_1",
+    "instances/knapPI_3_2000_1000_1"
+]
 
+files_name = [
+    "knapPI_1_100_1000_1",
+    "knapPI_2_100_1000_1",
+    "knapPI_3_100_1000_1",
+    "knapPI_1_200_1000_1",
+    "knapPI_2_200_1000_1",
+    "knapPI_3_200_1000_1",
+    "knapPI_1_500_1000_1",
+    "knapPI_2_500_1000_1",
+    "knapPI_3_500_1000_1",
+    "knapPI_1_1000_1000_1",
+    "knapPI_2_1000_1000_1",
+    "knapPI_3_1000_1000_1",
+    "knapPI_1_2000_1000_1",
+    "knapPI_2_2000_1000_1",
+    "knapPI_3_2000_1000_1"
+]
+
+
+def generate_problem(file_path: str) -> KnapsackProblem:
+    values = []
+    weights = []
+    capacity = 0
+    first_line = True
+    with open(file_path, "r") as file:
+        lines = file.read().split("\n")
+        for index, line in enumerate(lines):
+            line_list = line.strip().split(" ")
+            if first_line:
+                capacity = int(line_list[1])
+                first_line = False
+            elif index == len(lines)-2:
+                #print(line_list)
+                break
+            else:
+                v, w = line_list
+                values.append(int(v))
+                weights.append(int(w))
+            
+    return KnapsackProblem(values, weights, capacity)
+
+problem = generate_problem(files_path[0])
 
 def funcion(x):
     try:
-        problem.set_solution(binarize(q2, x))
+        problem.set_solution(x)
     except BadSolutionException as error:
         return error.total_weight
     return - problem.get_total_value()
 
+def print_status(file_path, q_function, iteracion):
+    strtime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+    print(f"{strtime} - evaluando: {file_path} con funcion: {q_function}, iteracion {iteracion}/31")
+
 if __name__ == "__main__":
-    inverted_total_value, solution = minimize(
-        funcion, 
-        dof=len(values), 
-        #x0=[2] * len(values),
-        bounds=[(-6, 6)] * len(values),
-        #pp=0.5,
-        #cr=0.8,
-        #pm=0.7,
-        npop=20, 
-        maxiter=1000,
-        disp=True
-    )
-    total_value = - inverted_total_value
-    binary_solution = binarize(q2, solution)
-    print(f"{total_value=}")
-    print(f"{binary_solution=}")
-    print(f"{solution=}")
-    problem.print_result()
+    
+    for file_path in files_path:
+        for q_function in [q1, q2, q3, q4]:
+            for iteration in range(31):
+                print_status(file_path, q_function.__name__, iteration)
+                problem = generate_problem(file_path)
+                
+                inverted_total_value, solution = minimize(
+                    funcion, 
+                    q_function,
+                    dof=len(problem.items), 
+                    #x0=[0.5] * len(values),
+                    bounds=[(-3, 3)] * len(problem.items),
+                    #pp=0.95,
+                    #cr=0.05,
+                    #pm=0.8,
+                    npop=200, 
+                    maxiter=100,
+                    disp=False
+                )
+                
+                total_value = - inverted_total_value
+                binary_solution = solution
+                print(f"{total_value=}")
+                print(f"{solution=}")
+                print(f"{binary_solution=}")
+                problem.print_result()

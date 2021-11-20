@@ -5,10 +5,12 @@ from random import randint
 from copy import deepcopy
 
 import sys
+
+from binary_methods.q_shape import binarize
 sys.tracebacklimit = 0
 
 
-def _generate_new_position(x0: list = None, dof: int = None, bounds: list = None) -> list:
+def _generate_new_position(t_func, x0: list = None, dof: int = None, bounds: list = None) -> list:
     '''GENERATE NEW POSITION
 
     Parameters
@@ -63,19 +65,19 @@ def _generate_new_position(x0: list = None, dof: int = None, bounds: list = None
     '''
 
     if x0 and bounds:
-        return [min(max(uniform(-1,1) + x0[i], bounds[i][0]), bounds[i][1]) for i in range(len(x0))]
+        return binarize(t_func, [min(max(uniform(-1,1) + x0[i], bounds[i][0]), bounds[i][1]) for i in range(len(x0))])
         
     if bounds:
-        return [uniform(bounds[i][0], bounds[i][1]) for i in range(len(bounds))]
+        return binarize(t_func, [uniform(bounds[i][0], bounds[i][1]) for i in range(len(bounds))])
 
     if x0:
-        return [x_i + uniform(-1, 1) for x_i in x0]
+        return binarize(t_func, [x_i + uniform(-1, 1) for x_i in x0])
 
     if dof:
-        return [uniform(-1, 1) for _ in range(0, dof)]
+        return binarize(t_func, [uniform(-1, 1) for _ in range(0, dof)])
 
 
-def minimize(func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0.4,
+def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0.4,
              npop=10, disp=False, maxiter=50):
     '''
     Parameters
@@ -129,7 +131,7 @@ def minimize(func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0.4,
     spacer = len(str(npop))     # for logging only
 
     # initialize population
-    pop = [_generate_new_position(x0, dof, bounds) for _ in range(0, npop)]
+    pop = [_generate_new_position(t_func, x0, dof, bounds) for _ in range(0, npop)]
     
     # main loop
     hist = []
@@ -143,7 +145,9 @@ def minimize(func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0.4,
         gbest = pop[0]
         
         # print something useful
-        if disp: print(f'> ITER: {epoch+1:>{spacer}} | POP: {len(pop)} | GBEST: {[func(x) for x in pop[0::100]]}')
+        if disp: 
+            print(f'> ITER: {epoch+1:>{spacer}} | POP: {len(pop)} | GBEST: {func(gbest)}') #  {[func(x) for x in pop[0::100]]}')
+            #print(func(gbest))
 
         # procreation and cannibalism
         for i in range(0, nr):
@@ -157,13 +161,13 @@ def minimize(func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0.4,
             for j in range(0, int(dof/2)):
 
                 # generate two new children using equation (1)
-                alpha = random()
-                c1 = [(alpha * v1) + ((1 - alpha)*v2) for v1, v2 in zip(p1, p2)]
-                c2 = [(alpha * v2) + ((1 - alpha)*v1) for v1, v2 in zip(p1, p2)]
+                alpha = random()*3
+                c1 = [(alpha * v1) + ((3 - alpha)*v2) for v1, v2 in zip(p1, p2)]
+                c2 = [(alpha * v2) + ((3 - alpha)*v1) for v1, v2 in zip(p1, p2)]
 
                 # persist new children to temp population
-                children.append(c1)
-                children.append(c2)
+                children.append(binarize(t_func, c1))
+                children.append(binarize(t_func, c2))
 
             # cannibalism - destroy male; since female black widow spiders are 
             # larger and often end up killing the male during mating, we'll

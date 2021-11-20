@@ -24,10 +24,13 @@ def q4(x: float, x_max = 6) -> float:
 
 def binarize(q_function, x_list: List[float]) -> List[int]:
     result = []
+    
     for value in x_list:
         rand = random()
         T_value = q_function(value, x_max=6)
+        BT = round(T_value)
 
-        result.append(round(T_value))
-        #result.append(1 if rand <= T_value else 0)
+        #result.append(round(T_value))
+        #result.append(abs(1 - BT) if rand <= T_value else 0)
+        result.append(1 if rand <= T_value else 0)
     return result
