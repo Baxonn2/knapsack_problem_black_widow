@@ -3,6 +3,7 @@ from random import choice
 from random import random
 from random import randint
 from copy import deepcopy
+import numpy as np
 
 import sys
 
@@ -131,15 +132,14 @@ def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0
     spacer = len(str(npop))     # for logging only
 
     # initialize population
-    pop = [_generate_new_position(t_func, x0, dof, bounds) for _ in range(0, npop)]
-    
+    pop = np.array([_generate_new_position(t_func, x0, dof, bounds) for _ in range(0, npop)])
     # main loop
     hist = []
     for epoch in range(0, maxiter):
 
 		# initialize epoch
         pop = sorted(pop, key=lambda x: func(x), reverse=False)
-        pop1 = deepcopy(pop[:nr])
+        pop1 = np.copy(pop[:nr])
         pop2 = []
         pop3 = []
         gbest = pop[0]
@@ -164,8 +164,10 @@ def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0
 
                 # generate two new children using equation (1)
                 alpha = random()*3
-                c1 = [(alpha * v1) + ((3 - alpha)*v2) for v1, v2 in zip(p1, p2)]
-                c2 = [(alpha * v2) + ((3 - alpha)*v1) for v1, v2 in zip(p1, p2)]
+                #c1 = [(alpha * v1) + ((3 - alpha)*v2) for v1, v2 in zip(p1, p2)]
+                #c2 = [(alpha * v2) + ((3 - alpha)*v1) for v1, v2 in zip(p1, p2)]
+                c1 = (alpha * p1) + ((3 - alpha)*p2)
+                c2 = (alpha * p2) + ((3 - alpha)*p1)
 
                 # persist new children to temp population
                 children.append(binarize(t_func, c1))
@@ -175,8 +177,8 @@ def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0
             # larger and often end up killing the male during mating, we'll
             # assume that the fitter partent is the female. thus, we'll delete 
             # the weaker parent.
-            if func(p1) > func(p2): pop1.pop(i1)
-            else: pop1.pop(i2)
+            if func(p1) > func(p2): np.delete(pop1, i1, 0)
+            else: np.delete(pop1, i2)
 
             # cannibalism - destroy some children
             children = sorted(children, key=lambda x: func(x), reverse=False)
@@ -202,7 +204,8 @@ def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0
 
         # assemble final population
         pop2.extend(pop3)
-        pop = deepcopy(pop2)
+        pop = np.copy(pop2)
 
+        exit()
     # return global best position and func value at global best position
     return func(gbest), gbest, hist

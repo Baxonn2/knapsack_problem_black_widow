@@ -5,7 +5,7 @@ from binary_methods.q_shape import q1, q2, q3, q4
 from datetime import datetime
 
 files_path = [
-    "instances/knapPI_1_100_1000_1",
+    "instances/knapPI_1_1000_1000_1",
     "instances/knapPI_2_100_1000_1",
     "instances/knapPI_3_100_1000_1",
     "instances/knapPI_1_200_1000_1",
@@ -95,7 +95,7 @@ if __name__ == "__main__":
                     pm=0.8,
                     npop=20, 
                     maxiter=100,
-                    disp=False
+                    disp=True
                 )
                 
                 total_value = - inverted_total_value
