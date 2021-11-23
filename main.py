@@ -2,6 +2,7 @@ from typing import List
 from bwo import minimize
 from knapsack import KnapsackProblem, BadSolutionException
 from binary_methods.q_shape import q1, q2, q3, q4
+from binary_methods.v_shape import v1, v2, v3, v4
 from datetime import datetime
 
 files_path = [
@@ -79,7 +80,7 @@ def print_status(file_path, q_function, iteracion):
 if __name__ == "__main__":
     
     for file_path, file_name in zip(files_path, files_name):
-        for q_function in [q1, q2, q3, q4]:
+        for q_function in [v1, v2, v3, v4]:
             for iteration in range(31):
                 print_status(file_name, q_function.__name__, iteration)
                 problem = generate_problem(file_path)
@@ -89,7 +90,7 @@ if __name__ == "__main__":
                     q_function,
                     dof=len(problem.items), 
                     #x0=[0.5] * len(values),
-                    bounds=[(-3, 3)] * len(problem.items),
+                    bounds=[(-6, 6)] * len(problem.items),
                     pp=0.95,
                     cr=0.05,
                     pm=0.8,
