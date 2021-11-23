@@ -206,6 +206,5 @@ def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0
         pop2.extend(pop3)
         pop = np.copy(pop2)
 
-        exit()
     # return global best position and func value at global best position
     return func(gbest), gbest, hist
