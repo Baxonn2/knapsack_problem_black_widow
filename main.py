@@ -1,43 +1,43 @@
 from typing import List
 from bwo import minimize
 from knapsack import KnapsackProblem, BadSolutionException
-from binary_methods.q_shape import q1, q2, q3, q4
+from binary_methods.s_shape import s1, s2, s3, s4
 from datetime import datetime
 
 files_path = [
-    "instances/knapPI_1_100_1000_1",
-    "instances/knapPI_2_100_1000_1",
-    "instances/knapPI_3_100_1000_1",
-    "instances/knapPI_1_200_1000_1",
-    "instances/knapPI_2_200_1000_1",
-    "instances/knapPI_3_200_1000_1",
-    "instances/knapPI_1_500_1000_1",
-    "instances/knapPI_2_500_1000_1",
-    "instances/knapPI_3_500_1000_1",
-    "instances/knapPI_1_1000_1000_1",
-    "instances/knapPI_2_1000_1000_1",
+    #"instances/knapPI_1_100_1000_1",
+    #"instances/knapPI_2_100_1000_1",
+    #"instances/knapPI_3_100_1000_1",
+    #"instances/knapPI_1_200_1000_1",
+    #"instances/knapPI_2_200_1000_1",
+    #"instances/knapPI_3_200_1000_1",
+    #"instances/knapPI_1_500_1000_1",
+    #"instances/knapPI_2_500_1000_1",
+    #"instances/knapPI_3_500_1000_1",
+    #"instances/knapPI_1_1000_1000_1",
+    #"instances/knapPI_2_1000_1000_1",
     "instances/knapPI_3_1000_1000_1",
-    "instances/knapPI_1_2000_1000_1",
-    "instances/knapPI_2_2000_1000_1",
-    "instances/knapPI_3_2000_1000_1"
+    #"instances/knapPI_1_2000_1000_1",
+    #"instances/knapPI_2_2000_1000_1",
+    #"instances/knapPI_3_2000_1000_1"
 ]
 
 files_name = [
-    "knapPI_1_100_1000_1",
-    "knapPI_2_100_1000_1",
-    "knapPI_3_100_1000_1",
-    "knapPI_1_200_1000_1",
-    "knapPI_2_200_1000_1",
-    "knapPI_3_200_1000_1",
-    "knapPI_1_500_1000_1",
-    "knapPI_2_500_1000_1",
-    "knapPI_3_500_1000_1",
-    "knapPI_1_1000_1000_1",
-    "knapPI_2_1000_1000_1",
+    #"knapPI_1_100_1000_1",
+    #"knapPI_2_100_1000_1",
+    #"knapPI_3_100_1000_1",
+    #"knapPI_1_200_1000_1",
+    #"knapPI_2_200_1000_1",
+    #"knapPI_3_200_1000_1",
+    #"knapPI_1_500_1000_1",
+    #"knapPI_2_500_1000_1",
+    #"knapPI_3_500_1000_1",
+    #"knapPI_1_1000_1000_1",
+    #"knapPI_2_1000_1000_1",
     "knapPI_3_1000_1000_1",
-    "knapPI_1_2000_1000_1",
-    "knapPI_2_2000_1000_1",
-    "knapPI_3_2000_1000_1"
+    #"knapPI_1_2000_1000_1",
+    #"knapPI_2_2000_1000_1",
+    #"knapPI_3_2000_1000_1"
 ]
 
 
@@ -79,8 +79,8 @@ def print_status(file_path, q_function, iteracion):
 if __name__ == "__main__":
     
     for file_path, file_name in zip(files_path, files_name):
-        for q_function in [q1, q2, q3, q4]:
-            for iteration in range(31):
+        for q_function in [s4]:
+            for iteration in range(3):
                 print_status(file_name, q_function.__name__, iteration)
                 problem = generate_problem(file_path)
                 
@@ -89,7 +89,7 @@ if __name__ == "__main__":
                     q_function,
                     dof=len(problem.items), 
                     #x0=[0.5] * len(values),
-                    bounds=[(-3, 3)] * len(problem.items),
+                    bounds=[(-6, 6)] * len(problem.items),
                     pp=0.95,
                     cr=0.05,
                     pm=0.8,

@@ -6,7 +6,7 @@ from copy import deepcopy
 
 import sys
 
-from binary_methods.q_shape import binarize
+from binary_methods.s_shape import binarize
 sys.tracebacklimit = 0
 
 
@@ -163,9 +163,9 @@ def minimize(func, t_func, x0=None, dof=None, bounds=None, pp=0.6, cr=0.44, pm=0
             for j in range(0, int(dof/2)):
 
                 # generate two new children using equation (1)
-                alpha = random()*3
-                c1 = [(alpha * v1) + ((3 - alpha)*v2) for v1, v2 in zip(p1, p2)]
-                c2 = [(alpha * v2) + ((3 - alpha)*v1) for v1, v2 in zip(p1, p2)]
+                alpha = random()*12
+                c1 = [(alpha * v1) + ((12 - alpha)*v2) - 6 for v1, v2 in zip(p1, p2)]
+                c2 = [(alpha * v2) + ((12 - alpha)*v1) - 6 for v1, v2 in zip(p1, p2)]
 
                 # persist new children to temp population
                 children.append(binarize(t_func, c1))
